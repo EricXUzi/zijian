@@ -7,12 +7,12 @@
   <meta name="description" content="查香港繁体字，用手写楷书和米字格对照笔画。">
   <title>字間 · 简繁转换</title>
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=radicals2">
   <script src="assets/opencc-1.4.2.js" defer></script>
   <script src="app.js" defer></script>
   <script src="assets/learning-data.js" defer></script>
   <script src="stroke-player.js" defer></script>
-  <script src="learning.js" defer></script>
+  <script src="learning.js?v=radicals2" defer></script>
 </head>
 <body>
   <svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -63,10 +63,11 @@
       <header class="learn-head"><div><h2 id="learn-title">小学字词</h2><p>知道怎么读，或只认得部首，也能找到字。</p></div><a href="https://www.edbchinese.hk/lexlist_ch/" target="_blank" rel="noopener noreferrer">教育局字词表 ↗</a></header>
       <form id="lookup-form" class="lookup-form">
         <label class="search-mode"><span>查找方式</span><select id="lookup-mode"><option value="char">汉字或词语</option><option value="radical">部首</option><option value="strokes">总笔画数</option><option value="jyut">粤语拼音</option><option value="pinyin">普通话拼音</option></select></label>
-        <label class="search-box"><span id="query-label">汉字或词语</span><input id="lookup-query" type="text" placeholder="例如：学校" value="学校" autocomplete="off" enterkeyhint="search"></label>
+        <label id="search-box" class="search-box"><span id="query-label">汉字或词语</span><input id="lookup-query" type="text" placeholder="例如：学校" value="学校" autocomplete="off" enterkeyhint="search"></label>
+        <label id="rad-scope-label" hidden><span>部首范围</span><select id="rad-scope"><option value="common">常用部首</option><option value="all">全部部首</option></select></label>
         <button class="lookup-go" type="submit">查找</button>
       </form>
-      <details id="rad-picker" class="rad-picker" hidden><summary>从部首表选择</summary><div id="rad-list"></div></details>
+      <div id="rad-picker" class="rad-picker" hidden><p id="rad-instruction">点一下你认得的部首，就能看到有哪些字。</p><div id="rad-list" role="group" aria-labelledby="rad-instruction"></div></div>
       <div class="query-examples" id="query-examples" aria-label="查询示例"></div>
       <div class="search-feedback" id="lookup-feedback" role="status"></div>
       <div class="result-choices" id="lookup-matches" aria-label="选择查看哪个字"></div>

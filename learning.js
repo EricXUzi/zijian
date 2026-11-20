@@ -21,11 +21,46 @@
   }
   const mode = el('lookup-mode'), input = el('lookup-query');
   const samples = {
-    char:['学校','头发','書包'],radical:['木','水','言'],strokes:['6','12','16'],
+    char:['学校','头发','書包'],strokes:['6','12','16'],
     jyut:['hok6','zi6','syu1'],pinyin:['xué','shu1','zi4']
   };
-  const hints = {char:'例如：学校、头发',radical:'例如：木、氵、讠',strokes:'输入笔画数，例如 16',jyut:'例如：hok6，也可输入 hok',pinyin:'例如：xué、xue2 或 xue'};
-  const radicalAliases = {'氵':'水','扌':'手','忄':'心','亻':'人','礻':'示','衤':'衣','艹':'艸','灬':'火','犭':'犬','牜':'牛','飠':'食','饣':'食','讠':'言','訁':'言','钅':'金','釒':'金','纟':'糸','糹':'糸','辶':'辵','刂':'刀','爫':'爪','攵':'攴','罒':'网','⻊':'足','王':'玉','耂':'老','爿':'爿','阝':'阜邑'};
+  const hints = {char:'例如：学校、头发',strokes:'输入笔画数，例如 16',jyut:'例如：hok6，也可输入 hok',pinyin:'例如：xué、xue2 或 xue'};
+  // Stroke groups follow the HK Education Bureau picker. Roots use the index's spelling.
+  const rootGroups = {
+    1:'一丨丶丿乙亅',2:'二亠人儿入八冂冖冫几凵刀力勹匕匸匚十卜卩厂厶又',
+    3:'口囗土士夊夕大女子宀寸小尢尸屮山巛工己巾干幺广廴廾弋弓彐彡彳',
+    4:'心戈戶手支攴文斗斤方无日曰月木欠止歹殳毋比毛氏气水火爪父爻爿片牙牛犬',
+    5:'玄玉瓜瓦甘生用田疋疒癶白皮皿目矛矢石示禸禾穴立',
+    6:'竹米糸缶网羊羽老而耒耳聿肉臣自至臼舌舛舟艮色艸虍虫血行衣襾',
+    7:'見角言谷豆豕豸貝赤走足身車辛辰辵邑酉釆里',8:'金長門阜隶隹雨靑非',
+    9:'面革韋韭音頁風飛食首香',10:'馬骨高髟鬥鬯鬼',11:'魚鳥鹵鹿麥麻',12:'黃黍黑',
+    13:'黽鼎鼓鼠',14:'鼻齊',15:'齒',16:'龍',18:'龜'
+  };
+  // Positional forms map to the same dictionary root. Left and right 阝 have different roots.
+  const forms = [
+    ['氵','水','三点水','3'],['扌','手','提手旁','3'],['亻','人','单人旁','2'],
+    ['忄','心','竖心旁','3'],['口','口','口字旁','3'],['木','木','木字旁','4'],
+    ['艹','艸','草字头','3 4'],['訁','言','言字旁','7'],['辶','辵','走之','3 4'],
+    ['糹','糸','绞丝旁','6'],['宀','宀','宝盖头','3'],['日','日','日字旁','4'],
+    ['讠','言','简体言字旁','2'],['纟','糸','简体绞丝旁','3'],['阝','阜','左耳旁','2 3'],['阝','邑','右耳旁','2 3'],
+    ['冫','冫','两点水','2'],['刂','刀','立刀旁','2'],['犭','犬','反犬旁','3'],['彳','彳','双人旁','3'],
+    ['女','女','女字旁','3'],['土','土','提土旁','3'],['囗','囗','方框儿','3'],['灬','火','四点底','4'],
+    ['爫','爪','爪字头','4'],['攵','攴','反文旁','4'],['王','玉','王字旁','4'],['牜','牛','牛字旁','4'],
+    ['礻','示','示字旁','4'],['衤','衣','衣字旁','5'],['罒','网','网字头','5'],['耂','老','老字头','4'],
+    ['⺮','竹','竹字头','6'],['⻊','足','足字旁','7'],['釒','金','金字旁','8'],['钅','金','简体金字旁','5'],
+    ['飠','食','食字旁','8'],['饣','食','简体食字旁','3'],['月','肉','肉月旁','4'],['月','月','月字旁','4']
+  ];
+  const commonGlyphs = new Set(['氵','扌','亻','忄','口','木','艹','訁','辶','糹','宀','日','讠','阝']);
+  const indexedRoots = new Set([...records.values()].map(r=>r.radical));
+  const radicalChoices = forms.filter(([,root])=>indexedRoots.has(root));
+  for (const [count,roots] of Object.entries(rootGroups)) {
+    for (const root of roots) {
+      if (indexedRoots.has(root) && !radicalChoices.some(([glyph,r])=>glyph===root && r===root)) {
+        radicalChoices.push([root,root,'',count]);
+      }
+    }
+  }
+  let pickedRadical = null;
   const base = 'https://www.edbchinese.hk/';
   const player = window.createStrokePlayer();
   const hkCollator = new Intl.Collator('zh-HK');
@@ -189,9 +224,12 @@
     el('more-matches').hidden=shown>=matches.length;
   }
   function search() {
-    const query=input.value.trim(); let list=[], error='', phrase='';
+    let list=[], error='', phrase='';
     const choice=mode.value;
-    if (!query) error='请输入要查的字、读音或笔画数。';
+    const query=input.value.trim();
+    if (choice==='radical') {
+      if (pickedRadical) list=[...records.values()].filter(r=>r.radical===pickedRadical[1]).map(r=>r.char);
+    } else if (!query) error='请输入要查的字、读音或笔画数。';
     else if (choice==='char') {
       phrase=toHK(query);
       const letters=Array.from(phrase).filter(c=>han.test(c));
@@ -203,11 +241,6 @@
     } else if (choice==='strokes') {
       if (!/^\d{1,2}$/.test(query)||+query<1||+query>32) error='请输入 1 至 32 之间的整数。';
       else list=[...records.values()].filter(r=>r.strokes===+query).map(r=>r.char);
-    } else if (choice==='radical') {
-      const normalized=query.normalize('NFKC');
-      const radical=radicalAliases[normalized]||toHK(normalized);
-      if (Array.from(query).length!==1) error='请输入一个部首，或从部首表选择。';
-      else list=[...records.values()].filter(r=>r.radical && radical.includes(r.radical)).map(r=>r.char);
     } else {
       const jyut=choice==='jyut';
       const q=jyut?query.toLowerCase():pinyinCode(query);
@@ -222,6 +255,11 @@
       info.append('「'+phrase+'」的读音　');
       for (const r of exactWord.jyut) info.append(audioButton(r,'jyut'));
       if (exactWord.mandarin) info.append(audioButton(exactWord.mandarin,'pinyin'));
+    } else if (choice==='radical') {
+      if (pickedRadical) {
+        const [glyph,,name]=pickedRadical;
+        info.textContent='「'+glyph+'」'+name+'共找到 '+list.length+' 个字，点选查看。';
+      }
     } else info.textContent=error|| (list.length?'找到 '+list.length+' 个字，点选查看。':'没有匹配的字，请换一个条件。');
     if (choice==='char' && list.length) {
       const missing=[...new Set(Array.from(phrase).filter(c=>han.test(c)&&!records.has(c)))];
@@ -229,25 +267,61 @@
     }
     showChoices();card(list[0]||'');
   }
+  function renderRadicals() {
+    const scope=el('rad-scope').value;
+    let choices=radicalChoices;
+    if (scope==='common') choices=choices.filter(([glyph])=>commonGlyphs.has(glyph));
+    else if (scope==='all') choices=choices.slice().sort((a,b)=>parseInt(a[3],10)-parseInt(b[3],10));
+    else choices=choices.filter(choice=>choice[3].split(' ').includes(scope));
+    const grid=el('rad-list');
+    grid.replaceChildren();
+    grid.classList.toggle('common',scope==='common');
+    for (const choice of choices) {
+      const [glyph,,name]=choice;
+      const b=button('',()=>{
+        grid.querySelector('[aria-pressed="true"]')?.setAttribute('aria-pressed','false');
+        b.setAttribute('aria-pressed','true');
+        pickedRadical=choice;
+        search();
+      },'rad');
+      const shape=document.createElement('span');
+      shape.lang='zh-HK';shape.className='rad-shape';shape.textContent=glyph;b.append(shape);
+      if (name) {
+        const label=document.createElement('span');label.className='rad-name';label.textContent=name;b.append(label);
+      }
+      b.setAttribute('aria-label',name?glyph+'（'+name+'）':glyph);
+      b.setAttribute('aria-pressed','false');grid.append(b);
+    }
+    grid.scrollTop=0;
+  }
   function updateMode() {
+    const byRadical=mode.value==='radical';
+    el('lookup-form').classList.toggle('by-radical',byRadical);
+    el('search-box').hidden=input.disabled=byRadical;
+    el('lookup-form').querySelector('.lookup-go').hidden=byRadical;
+    el('rad-picker').hidden=el('rad-scope-label').hidden=!byRadical;
+    const box=el('query-examples');box.hidden=byRadical;
+    if (byRadical) {
+      pickedRadical=null;el('rad-scope').value='common';renderRadicals();return;
+    }
     input.placeholder=hints[mode.value];input.inputMode=mode.value==='strokes'?'numeric':'text';
     el('query-label').textContent=mode.selectedOptions[0].textContent;
-    el('rad-picker').hidden=mode.value!=='radical';
-    const box=el('query-examples');box.replaceChildren('试一试');
+    box.replaceChildren('试一试');
     for (const q of samples[mode.value]) box.append(button(q,()=>{input.value=q;search();},'hint'));
   }
   function lookupText(value,bringIntoView) {
     mode.value='char';updateMode();input.value=value;search();
     if (bringIntoView) el('learn').scrollIntoView({block:'start'});
   }
-  const radicals=[...new Set([...records.values()].map(r=>r.radical).filter(Boolean))];
-  radicals.sort((a,b)=>a.codePointAt(0)-b.codePointAt(0));
-  // Kangxi radical order also groups the picker by increasing radical stroke count.
-  const radicalOrder=Array.from({length:214},(_,i)=>String.fromCodePoint(0x2f00+i).normalize('NFKC'));
-  for (const r of radicalOrder.filter(c=>radicals.includes(c))) {
-    el('rad-list').append(button(r,()=>{input.value=r;search();el('rad-picker').open=false;},'rad'));
-  }
-  mode.addEventListener('change',()=>{updateMode();input.value='';matches=[];showChoices();card('');el('lookup-feedback').textContent=hints[mode.value];input.focus();});
+  for (const count of Object.keys(rootGroups)) el('rad-scope').add(new Option(count+' 画的部首',count));
+  el('rad-scope').addEventListener('change',()=>{
+    pickedRadical=null;renderRadicals();search();
+  });
+  mode.addEventListener('change',()=>{
+    input.value='';updateMode();
+    if (mode.value==='radical') {search();return;}
+    matches=[];showChoices();card('');el('lookup-feedback').textContent=hints[mode.value];input.focus();
+  });
   el('lookup-form').addEventListener('submit',event=>{event.preventDefault();search();});
   el('more-matches').addEventListener('click',()=>{shown+=40;showChoices();});
   el('more-words').addEventListener('click',()=>{wordLimit+=10;renderWords();});
@@ -264,5 +338,6 @@
   });
   document.addEventListener('zijian-lookup',event=>lookupText(event.detail,true));
   window.addEventListener('pagehide',stopAudio);
+  if (new URLSearchParams(location.search).get('lookup')==='radical') mode.value='radical';
   updateMode();search();
 })();
