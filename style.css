@@ -114,3 +114,70 @@ dialog::backdrop{background:#19372763}
 }
 @media(max-width:370px){.brand-sub{display:none}.hero-art{transform:translateY(-50%) scale(.43);right:5px}.hero-copy{padding:13px}.hero p{font-size:11px}.live{display:none}.wrap{width:calc(100% - 24px)}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* School dictionary */
+.top-links,.guides,.stroke-controls,.result-choices,.query-examples,.official-links{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
+.top-links{gap:1.1rem}.top-links a,.learn-head a,.official-links a,.official-demo,.word-level a{color:var(--green);text-decoration-thickness:1px;text-underline-offset:.2em}
+.top-links a{font-size:.875rem;text-decoration:none}.top-links a:hover{text-decoration:underline}
+.char-cell{padding:0;color:inherit;font-family:inherit;border-radius:0;cursor:pointer}
+.char-cell:hover{background:#edf4e7;border-color:#83a389}
+.learn-shortcut{display:flex;justify-content:flex-end;margin:.45rem 0 1.4rem}
+.learn-shortcut button,.quiet{background:none;color:var(--green);border:0;text-decoration:underline;text-underline-offset:3px;padding:6px 0;font-size:.875rem}
+.learning{scroll-margin-top:15px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.learn-head,.word-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.learn-head{padding:20px 22px 14px}.learn-head h2{font-size:1.5rem;margin:0}.learn-head p,.minor,.stroke-feedback,.search-feedback,.query-examples{color:#52695c;font-size:.875rem;line-height:1.5}
+.learn-head p{margin:3px 0 0}.learn-head a,.official-links a,.official-demo{font-size:.875rem}
+.lookup-form{display:grid;align-items:end;grid-template-columns:minmax(140px,.36fr) minmax(0,1fr) auto;gap:10px;padding:0 22px}
+.lookup-form label,.official-selects label{display:grid;gap:4px;min-width:0}
+.lookup-form label span,.official-selects label{font-size:.85rem;color:#4e6557}
+.learning select,.learning input{font:inherit;color:var(--ink);background:#fff;border-radius:6px;border:1px solid #bccdc0;padding:7px 9px;min-width:0}
+.lookup-form select,.lookup-form input,.lookup-go{height:41px;font-size:1rem}
+.lookup-go,.stroke-controls button:first-child{background:var(--green);color:#fff;border:1px solid var(--green);border-radius:6px;padding:7px 18px}
+.query-examples,.search-feedback,.result-choices,.rad-picker{margin:10px 22px}
+.query-examples button,.rad,.guides button,.stroke-controls button,.match,.listen{background:#f3f6ef;border:1px solid #cfdbcf;color:var(--green);border-radius:5px;font:inherit}
+.query-examples button{padding:4px 9px}.query-examples{font-size:.82rem}
+.search-feedback{margin-bottom:6px}.search-feedback .listen{margin:3px}
+.result-choices{margin-top:6px;max-height:190px;overflow:auto}.match,.rad{min-width:38px;min-height:36px;padding:3px 7px;font:24px/1.15 var(--hk)}
+.match[aria-pressed=true],.guides button[aria-pressed=true]{color:white;background:var(--green);border-color:var(--green)}
+#more-matches{margin:0 22px 10px}
+.rad-picker summary,.study-facts summary{cursor:pointer;color:var(--green);font-size:.9rem}
+#rad-list{display:flex;flex-wrap:wrap;gap:4px;max-height:210px;overflow:auto;padding:8px 0}
+.study-card{display:grid;grid-template-columns:minmax(245px,.68fr) minmax(0,1.32fr);gap:25px;border-top:1px solid var(--line);padding:20px 22px;background:#fcfdf9}
+.study-practice{display:flex;flex-direction:column;align-items:center;min-width:0;justify-content:center}
+.practice-board{position:relative;display:grid;place-items:center;isolation:isolate;width:clamp(155px,18vw,195px);aspect-ratio:1;border:1px solid #9eb298;background-color:#f8f9ed;overflow:hidden}
+.practice-board:before{position:absolute;content:"";inset:0;z-index:-1;pointer-events:none}
+.practice-board[data-guide=rice]:before{--g:#c9d1b9;background:linear-gradient(45deg,transparent 49.8%,var(--g) 50%,transparent 50.3%),linear-gradient(-45deg,transparent 49.8%,var(--g) 50%,transparent 50.3%),repeating-linear-gradient(90deg,var(--g) 0 4px,transparent 4px 8px) center/100% 1px no-repeat,repeating-linear-gradient(var(--g) 0 4px,transparent 4px 8px) center/1px 100% no-repeat}
+.practice-board[data-guide=nine]:before{background-image:linear-gradient(to right,#c0ccb2 1px,transparent 1px),linear-gradient(to bottom,#c0ccb2 1px,transparent 1px);background-size:33.3333% 33.3333%;background-position:-1px -1px}
+#card-char{font:clamp(120px,15vw,158px)/1 var(--hk);color:#234c3a}
+#stroke-svg{width:100%;height:100%;position:absolute;inset:0}
+.guides,.stroke-controls{justify-content:center;gap:4px;margin-top:9px}.guides button,.stroke-controls button{padding:6px 9px;min-height:31px;font-size:.8125rem}
+.stroke-feedback{margin:6px 0 0;min-height:1.5em}
+.study-facts{min-width:0}.study-facts h3,.word-section h3{margin:0;font-size:1.17rem}.card-meta{margin:6px 0 10px;color:var(--mid);font-size:.9rem}
+.pron-row{display:flex;align-items:baseline;gap:8px;margin:6px 0}.pron-row strong{width:52px;flex:none;font-size:.9rem}.pron-row>div{display:flex;gap:5px;flex-wrap:wrap}
+.listen{padding:4px 8px;font-size:.9rem}.listen:before{content:'♪';font-family:var(--sans);padding-right:5px;color:#58765f}
+.minor{margin:6px 0}.gloss{margin:10px 0;font-size:.9rem;color:#4f6258;overflow-wrap:anywhere}
+.study-facts details{border-top:1px solid var(--line);padding:10px 0 6px;margin-top:12px}
+.official-selects{display:flex;align-items:end;gap:9px;flex-wrap:wrap;margin:10px 0}
+.official-links{gap:12px}.official-demo{display:inline-block;margin-top:8px}
+.word-section{border-top:1px solid var(--line);padding:16px 22px}
+.word-head h3{margin-right:auto}.word-head label,.word-level{font-size:.8125rem;color:var(--mid)}
+.word-head select{padding:5px 7px;font-size:.82rem}.word-list{margin:8px 0}
+.word-line{display:grid;grid-template-columns:minmax(60px,.63fr) minmax(110px,1fr) auto;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #edf0e9}
+.word-name{background:none;border:0;text-align:left;color:var(--green);font:23px/1.2 var(--hk);padding:4px 0}
+.word-readings .listen{padding:3px 6px;font-size:.8125rem}.word-level a{color:inherit;text-decoration:none}.word-level a:hover{text-decoration:underline}
+@media(max-width:700px){
+  .top-links{gap:9px}.top-links a{font-size:12px}.top-links .text-btn{font-size:12px;padding:6px 0}
+  .learn-head{padding:15px 13px 10px}.learn-head h2{font-size:1.25rem}.learn-head p{font-size:.8125rem}.learn-head a{font-size:.78rem}
+  .lookup-form{grid-template-columns:105px minmax(0,1fr) 54px;gap:5px;padding:0 12px}.lookup-form select,.lookup-form input{padding-inline:4px}.lookup-go{padding:0}
+  .query-examples,.result-choices,.search-feedback,.rad-picker{margin-inline:12px}#more-matches{margin-inline:12px}
+  .study-card{grid-template-columns:1fr;gap:15px;padding:14px 13px}.practice-board{width:164px}#card-char{font-size:138px}
+  .word-section{padding:12px}.word-head{justify-content:flex-start;gap:6px}.word-head h3{width:100%}
+  .word-line{grid-template-columns:minmax(48px,.66fr) minmax(80px,1fr) auto;gap:4px}.word-name{font-size:21px}
+  .learn-shortcut{margin-bottom:10px}.learn-shortcut button{font-size:12px}
+}
+@media(max-width:400px){.brand-sub{display:none}}
+.scheme-control{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--mid);margin:4px 0 10px}
+.scheme-control select{font-size:.85rem;padding:4px 7px}
+.word-readings{display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+.word-readings .listen[data-lang=jyut]:before,.search-feedback .listen[data-lang=jyut]:before{content:"粤"}
+.word-readings .listen[data-lang=pinyin]:before,.search-feedback .listen[data-lang=pinyin]:before{content:"普"}

@@ -1,0 +1,26 @@
+字間 · 小学字词资料说明（2026-11-20）
+
+官方查字：香港特别行政区政府教育局课程发展处中国语文教育组《香港小學學習字詞表》
+https://www.edbchinese.hk/lexlist_ch/
+https://www.edbchinese.hk/lexlist_ch/fw_help.html
+按 1～32 画的官方检索结果核对了 4,804 个字的条目链接和笔画数。自选校园与生活词语中的学段只在官方词表能核对时显示。链接保留官方字卡和中英对照页面；官方原版动画及音频由教育局提供。点读时仅按音节访问音频，转换原文不会随请求传送。
+
+单字信息：Unihan 17.0.0（Unicode 汉字数据库），© 2025 Unicode, Inc.
+摘取读音、部首、英文释义等字段。参考 https://www.unicode.org/reports/tr38/
+原始数据 https://www.unicode.org/Public/17.0.0/ucd/Unihan.zip
+Unicode License v3，见 unicode-license.txt，https://www.unicode.org/license.txt
+
+粤语读音：粵語計算語言學基礎建設組 CanCLID 与 Rime Cantonese 贡献者，
+https://github.com/rime/rime-cantonese/tree/259f0e48bba840c3a2e0d117539e96937f3d89bc
+jyut6ping3.chars / jyut6ping3.words，选取单字读音与自选词的读法，调整排列。
+Creative Commons Attribution 4.0（署名 4.0），https://creativecommons.org/licenses/by/4.0/
+
+逐笔示意：Hanzi Writer Data 2.0.1 / Make Me a Hanzi，字形源自文鼎开源字体。
+https://github.com/chanind/hanzi-writer-data  https://github.com/skishore/makemeahanzi
+© Arphic Technology, Inc. 字形、中心线及其重排数据依文鼎公众授权书再分发，不提供担保；授权书见 stroke-license.txt。
+字間于 2026-11-20 选取字形、按下列笔序对照重排，分组用于网页播放。
+香港笔序映射及字形来源标记：forumdata-collab / chinese-worksheet，MIT，见 hk-order-license.txt。
+https://github.com/forumdata-collab/chinese-worksheet/tree/449c9c3b2f8b5a9b0e300836a6ec8b064ba9448b
+仅为来源标记为 EDB、笔画数与官方索引吻合且重排索引完整的字提供站内示意。示意使用开放字形，教育局的原版示范请从字卡打开。
+
+粤音比较：用 20 个常用字的官方页面中的音节核对黄锡凌、饶秉才两套显示方式，每套收录 528 个一致对应。切换标音时，未核对的音节保留香港语言学学会标记，并注明「粤拼」。两种查音入口均支持本地查询。

@@ -20,6 +20,7 @@
   let demo = true;
   let generation = 0;
   let graphemes = [];
+  let referenceChars = [];
   let gridOn = readPreference('grid') !== 'off';
 
   function readPreference(key) {
@@ -78,15 +79,19 @@
       fragment.append(run);
       plain = '';
     }
-    for (const char of graphemes.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)) {
+    const start = pageIndex * pageSize;
+    for (const [offset, char] of graphemes.slice(start, start + pageSize).entries()) {
       if (!isHan.test(char)) {
         plain += char;
         continue;
       }
       flushPlain();
-      const cell = document.createElement('span');
+      const cell = document.createElement('button');
+      cell.type = 'button';
       cell.className = 'char-cell';
       cell.textContent = char;
+      cell.dataset.lookup = referenceChars[start + offset] || char;
+      cell.setAttribute('aria-label','查「' + char + '」的读音和笔顺');
       fragment.append(cell);
     }
     flushPlain();
@@ -105,8 +110,11 @@
     resetCopy();
     result = convert(source.value, direction);
     graphemes = splitGraphemes(result);
+    const originalChars = direction === 'reverse' ? splitGraphemes(source.value) : graphemes;
+    referenceChars = originalChars.length === graphemes.length ? originalChars : [];
     byId('source-count').textContent = splitGraphemes(source.value).length + ' 字';
     byId('clear').disabled = !source.value;
+    byId('lookup-result').disabled = !isHan.test(result);
     copyButton.disabled = !result;
     pageIndex = 0;
     byId('paper').scrollTop = 0;
@@ -167,6 +175,14 @@
     if (demo) { source.select(); demo = false; }
   });
   source.addEventListener('input', () => { demo = false; updateText(); });
+  function lookup(text) {
+    document.dispatchEvent(new CustomEvent('zijian-lookup', {detail:text}));
+  }
+  output.addEventListener('click', e => {
+    const target = e.target.closest('[data-lookup]');
+    if (target) lookup(target.dataset.lookup);
+  });
+  byId('lookup-result').addEventListener('click', () => lookup(direction === 'forward' ? result : source.value));
   byId('clear').addEventListener('click', () => {
     demo = false;
     source.value = '';

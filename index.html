@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="style.css">
   <script src="assets/opencc-1.4.2.js" defer></script>
   <script src="app.js" defer></script>
+  <script src="assets/learning-data.js" defer></script>
+  <script src="stroke-player.js" defer></script>
+  <script src="learning.js" defer></script>
 </head>
 <body>
   <svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -26,7 +29,7 @@
   </svg>
   <header class="top"><div class="wrap top-inner">
     <div class="brand"><span class="mark" aria-hidden="true">字</span><span class="brand-name" lang="zh-HK">字間</span><span class="brand-sub">香港楷书查字</span></div>
-    <button type="button" id="help-open" class="text-btn"><svg class="icon"><use href="#icon-help"/></svg>使用说明</button>
+    <nav class="top-links" aria-label="站内导航"><a href="#learn">小学字词</a><button type="button" id="help-open" class="text-btn"><svg class="icon"><use href="#icon-help"/></svg>使用说明</button></nav>
   </div></header>
   <main class="wrap">
     <section class="hero" aria-labelledby="page-title">
@@ -55,6 +58,45 @@
           <button type="button" id="copy" class="copy"><svg class="icon"><use id="copy-icon" href="#icon-copy"/></svg><span id="copy-label">复制结果</span></button></div>
       </section>
     </div>
+    <div class="learn-shortcut"><button type="button" id="lookup-result">查这段文字的读音和笔顺</button></div>
+    <section id="learn" class="learning" aria-labelledby="learn-title">
+      <header class="learn-head"><div><h2 id="learn-title">小学字词</h2><p>知道怎么读，或只认得部首，也能找到字。</p></div><a href="https://www.edbchinese.hk/lexlist_ch/" target="_blank" rel="noopener noreferrer">教育局字词表 ↗</a></header>
+      <form id="lookup-form" class="lookup-form">
+        <label class="search-mode"><span>查找方式</span><select id="lookup-mode"><option value="char">汉字或词语</option><option value="radical">部首</option><option value="strokes">总笔画数</option><option value="jyut">粤语拼音</option><option value="pinyin">普通话拼音</option></select></label>
+        <label class="search-box"><span id="query-label">汉字或词语</span><input id="lookup-query" type="text" placeholder="例如：学校" value="学校" autocomplete="off" enterkeyhint="search"></label>
+        <button class="lookup-go" type="submit">查找</button>
+      </form>
+      <details id="rad-picker" class="rad-picker" hidden><summary>从部首表选择</summary><div id="rad-list"></div></details>
+      <div class="query-examples" id="query-examples" aria-label="查询示例"></div>
+      <div class="search-feedback" id="lookup-feedback" role="status"></div>
+      <div class="result-choices" id="lookup-matches" aria-label="选择查看哪个字"></div>
+      <button type="button" id="more-matches" class="quiet" hidden>再显示 40 个字</button>
+      <article id="learn-card" class="study-card" aria-labelledby="card-title">
+        <div class="study-practice">
+          <div id="practice-board" class="practice-board" data-guide="rice" lang="zh-HK"><span id="card-char">學</span><svg id="stroke-svg" viewBox="0 0 1024 1024" aria-hidden="true" hidden></svg></div>
+          <div id="guides" class="guides" role="group" aria-label="习字格"><button type="button" data-guide="rice" aria-pressed="true">米字格</button><button type="button" data-guide="nine" aria-pressed="false">九宫格</button><button type="button" data-guide="none" aria-pressed="false">无格</button></div>
+          <div id="stroke-controls" class="stroke-controls"><button type="button" id="play-strokes">播放笔顺</button><button type="button" id="step-stroke">下一笔</button><button type="button" id="reset-stroke" aria-label="回到楷书字形">重置</button></div>
+          <p class="stroke-feedback" id="stroke-feedback" role="status"></p>
+        </div>
+        <div class="study-facts">
+          <h3 id="card-title"></h3><div id="card-meta" class="card-meta"></div>
+          <label class="scheme-control">粤音标记<select id="official-scheme"><option value="lshk">香港语言学学会</option><option value="wsl">黄锡凌</option><option value="jbc">饶秉才</option></select></label><div class="pron-row"><strong>粤语</strong><div id="card-jyut"></div></div>
+          <div class="pron-row"><strong>普通话</strong><div id="card-pinyin"></div></div>
+          <p id="audio-tip" class="minor" role="status">点拼音播放教育局读音，需联网。</p>
+          <p id="card-gloss" class="gloss" lang="en"></p>
+          <details id="official-options"><summary>教育局字卡、笔顺与完整配词</summary>
+            <div class="official-selects"><label>官方词语排序<select id="official-sort"><option value="ks">按学习阶段</option><option value="stroke">按笔画</option></select></label></div>
+            <div class="official-links"><a id="official-card" target="_blank" rel="noopener noreferrer">打开该字的官方字卡 ↗</a><a id="official-words" target="_blank" rel="noopener noreferrer">分学段配词 ↗</a><a id="official-english" target="_blank" rel="noopener noreferrer">中英对照 ↗</a></div>
+          </details>
+          <a id="official-demo" class="official-demo" target="_blank" rel="noopener noreferrer">看教育局原版笔顺 ↗</a>
+        </div>
+      </article>
+      <section class="word-section" id="word-section" aria-labelledby="word-title"><div class="word-head"><h3 id="word-title">校园与生活组词</h3><label>学段 <select id="word-stage"><option value="all">全部</option><option value="1">小一至小三</option><option value="2">小四至小六</option></select></label>
+        <label>排序 <select id="word-sort"><option value="stage">学习阶段</option><option value="stroke">笔画顺序</option></select></label></div>
+        <div id="word-list" class="word-list"></div><button class="quiet" id="more-words" type="button" hidden>更多词语</button>
+        <p class="minor" id="word-note"></p>
+      </section>
+    </section>
     <section class="examples" aria-labelledby="examples-title">
       <h2 id="examples-title">一字多形</h2><p>有些字要放进词里才分得清。点一组，看它的两种写法。</p>
       <div class="example-list">
@@ -64,16 +106,16 @@
       </div>
     </section>
   </main>
-  <footer class="wrap footer"><span><svg class="icon"><use href="#icon-lock"/></svg>查字内容只在这台设备处理</span><button type="button" class="text-btn" id="credits-open">字库与来源</button></footer>
+  <footer class="wrap footer"><span><svg class="icon"><use href="#icon-lock"/></svg>简繁转换与文字检索在本机完成</span><button type="button" class="text-btn" id="credits-open">字库与来源</button></footer>
   <p id="notice" role="status" class="sr"></p>
   <noscript><p class="wrap">请在浏览器中启用 JavaScript（网页脚本）以转换文字。</p></noscript>
   <dialog id="details" aria-labelledby="dialog-title"><div class="dialog-head"><h2 id="dialog-title">使用说明</h2><button type="button" id="close" aria-label="关闭"><svg class="icon"><use href="#icon-close"/></svg></button></div>
     <div id="help-content" class="dialog-body"><h3>查一个词</h3><p>在原文框输入或粘贴字词，右侧会即时显示楷书。遇到「发」「干」等字，输入整个词更准确。</p>
-      <h3>对着写</h3><p>拖动字号滑块放大笔画，点「米字格」开关辅助线。字号和米字格设置会保存在当前浏览器。</p>
+      <h3>查读音与笔顺</h3><p>点转换结果中的字，或到「小学字词」按部首、笔画、粤语或普通话拼音找字。点拼音听读音，点「下一笔」逐笔对照。官方字卡提供完整配词和不同粤音标记。</p><h3>对着写</h3><p>拖动字号滑块放大笔画，点「米字格」开关辅助线。字号和米字格设置会保存在当前浏览器。</p>
       <h3>读香港繁体</h3><p>点「香港繁体 → 简体」，可以把学校通告转成简体来读。切换方向时，当前结果会成为新的原文。转换保留原句用词，粤语口语词也会保留。</p></div>
     <div id="credits-content" class="dialog-body" hidden><h3>香港字形</h3><p>繁体字优先使用「自由香港楷书」。这套字库以香港小学常用字为基础，字库未收录的字会使用备用楷书或设备字体。</p><p><a href="https://freehkfonts.opensource.hk/download/" target="_blank" rel="noopener">自由香港字型</a> · <a href="credits/hong-kong-kai-notice.txt" target="_blank" rel="noopener">鸣谢与署名</a> · <a href="https://creativecommons.org/licenses/by/4.0/deed.zh-hans" target="_blank" rel="noopener">署名 4.0 授权</a></p>
       <h3>简体与备用楷书</h3><p>采用霞鹜文楷常规字重，节选简体与香港常用字符制作网页字库。</p><p><a href="https://github.com/lxgw/LxgwWenKai" target="_blank" rel="noopener">霞鹜文楷项目</a> · <a href="credits/wenkai-license.txt" target="_blank" rel="noopener">字体授权</a></p>
-      <h3>简繁转换</h3><p>使用 OpenCC（开放中文转换）及其香港字形规则，在浏览器内转换。</p><p><a href="https://github.com/nk2028/opencc-js" target="_blank" rel="noopener">转换组件</a> · <a href="credits/opencc-license.txt" target="_blank" rel="noopener">组件授权</a> · <a href="credits/opencc-third-party.txt" target="_blank" rel="noopener">词库授权</a></p></div>
+      <h3>小学字词与笔顺</h3><p>官方字卡和学段核对自香港教育局。站内读音另取自 Unicode 汉字数据库和开放粤拼词库；笔顺示意采用开放字形与香港笔序对照。字形细节可与官方原版对读。</p><p><a href="credits/learning.txt" target="_blank" rel="noopener">数据、笔顺来源及授权</a></p><h3>简繁转换</h3><p>使用 OpenCC（开放中文转换）及其香港字形规则，在浏览器内转换。</p><p><a href="https://github.com/nk2028/opencc-js" target="_blank" rel="noopener">转换组件</a> · <a href="credits/opencc-license.txt" target="_blank" rel="noopener">组件授权</a> · <a href="credits/opencc-third-party.txt" target="_blank" rel="noopener">词库授权</a></p></div>
   </dialog>
 </body>
 </html>
